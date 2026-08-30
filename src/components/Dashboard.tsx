@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, Youtube, Clock, Lock, Sparkles, CheckCircle2, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -50,7 +50,7 @@ Resources:
         <header className="flex items-center justify-between border-b border-zinc-800 pb-6">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.4)]">
-              <Youtube className="w-6 h-6 text-white" />
+              <MonitorPlay className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-zinc-100 to-zinc-400">
               AutoTube Pipeline
@@ -205,7 +205,7 @@ Resources:
                 <button className="w-full relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                   <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
-                    <Youtube className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                    <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
                     <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
                   </div>
                 </button>
