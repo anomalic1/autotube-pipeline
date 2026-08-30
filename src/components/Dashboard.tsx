@@ -10,6 +10,7 @@ export default function Dashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(() => sessionStorage.getItem('apiUrl') || 'https://api.openai.com/v1/chat/completions');
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
+  const [apiModel, setApiModel] = useState(() => sessionStorage.getItem('apiModel') || 'gpt-3.5-turbo');
 
   // File state
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -24,6 +25,7 @@ export default function Dashboard() {
     e.preventDefault();
     sessionStorage.setItem('apiUrl', apiUrl);
     sessionStorage.setItem('apiKey', apiKey);
+    sessionStorage.setItem('apiModel', apiModel);
     setShowSettings(false);
   };
 
@@ -59,7 +61,7 @@ export default function Dashboard() {
           'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo", // Default, might be ignored by some APIs
+          model: apiModel,
           messages: [
             { role: "system", content: "You are an expert YouTube strategist. Given a transcript, generate exactly 3 high-converting, click-worthy titles and a detailed SEO description (including timestamps if you can infer them or placeholder chapters). Format output strictly as JSON with keys: 'titles' (array of strings) and 'description' (string)." },
             { role: "user", content: `Transcript: ${transcriptText.substring(0, 15000)}` }
@@ -302,6 +304,16 @@ export default function Dashboard() {
                     onChange={(e) => setApiKey(e.target.value)}
                     className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
                     placeholder="sk-..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-1">API Model</label>
+                  <input 
+                    type="text" 
+                    value={apiModel}
+                    onChange={(e) => setApiModel(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
+                    placeholder="e.g. gpt-4o, claude-3-opus, llama3"
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
