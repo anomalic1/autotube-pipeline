@@ -5,7 +5,7 @@
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Cloudflare_Logo.svg" width="60" alt="Cloudflare" />
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/YouTube_logo_%282013-201png" width="60" alt="YouTube" />
+  <img src="[https://upload.wikimedia.org/wikipedia/commons/b/b2/YouTube_logo_%282013-201png](https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png?_=20220706172052)" width="60" alt="YouTube" />
 </div>
 
 <h1 align="center">AutoTube Pipeline 🚀</h1>
