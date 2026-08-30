@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
@@ -11,35 +11,83 @@ export default function Dashboard() {
   const [apiUrl, setApiUrl] = useState(() => sessionStorage.getItem('apiUrl') || 'https://api.openai.com/v1/chat/completions');
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
 
+  // File state
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Generated Data
+  const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
+  const [generatedDescription, setGeneratedDescription] = useState('');
+
   const saveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem('apiUrl', apiUrl);
     sessionStorage.setItem('apiKey', apiKey);
     setShowSettings(false);
   };
-  
-  // Mock Data for UI demonstration
-  const generatedTitles = [
-    "I Built an AI Video Pipeline in 24 Hours",
-    "The Ultimate Automations Guide for YouTubers",
-    "How to Scale Your YouTube Channel with AI"
-  ];
-  const generatedDescription = `In this video, we build a fully automated YouTube pipeline using Cloudflare Pages, Vite, and OpenAI. 
 
-Timestamps:
-0:00 - Introduction
-1:30 - System Architecture
-5:00 - Building the Frontend
-12:45 - Cloudflare Edge Functions
-20:00 - YouTube API Integration
+  const processFiles = async (files: FileList) => {
+    let transcriptText = '';
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.startsWith('video/')) {
+        setVideoFile(file);
+      } else if (file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        transcriptText = await file.text();
+      }
+    }
 
-Resources:
-- GitHub Repo: [Link]
-- Follow me on Twitter!`;
+    if (!transcriptText) {
+      alert("Please upload a transcript file (.txt or .md)");
+      return;
+    }
+    if (!apiKey) {
+      alert("Please configure your API Key in Settings first.");
+      setShowSettings(true);
+      return;
+    }
 
-  const handleSimulateUpload = () => {
     setAppState('processing');
-    setTimeout(() => setAppState('review'), 3000);
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo", // Default, might be ignored by some APIs
+          messages: [
+            { role: "system", content: "You are an expert YouTube strategist. Given a transcript, generate exactly 3 high-converting, click-worthy titles and a detailed SEO description (including timestamps if you can infer them or placeholder chapters). Format output strictly as JSON with keys: 'titles' (array of strings) and 'description' (string)." },
+            { role: "user", content: `Transcript: ${transcriptText.substring(0, 15000)}` }
+          ],
+          response_format: { type: "json_object" }
+        })
+      });
+
+      if (!response.ok) throw new Error("API Request failed");
+      const data = await response.json();
+      const content = JSON.parse(data.choices[0].message.content);
+      
+      setGeneratedTitles(content.titles || ["Title 1", "Title 2", "Title 3"]);
+      setGeneratedDescription(content.description || "Description generated.");
+      setAppState('review');
+    } catch (err) {
+      console.error(err);
+      alert("Error generating metadata. Check API URL and Key, or CORS issues.");
+      setAppState('idle');
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
+    }
   };
 
   return (
@@ -70,9 +118,14 @@ Resources:
         {/* State 1: Dropzone */}
         {appState === 'idle' && (
           <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center justify-center pt-12">
-            <div className="w-full max-w-3xl relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative p-12 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-3xl flex flex-col items-center text-center border-dashed group-hover:border-indigo-500/50 transition-colors cursor-pointer" onClick={handleSimulateUpload}>
+            <div 
+              className="w-full max-w-3xl relative group"
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={handleDrop}
+            >
+              <div className={`absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur transition duration-1000 ${isDragging ? 'opacity-70' : 'opacity-25 group-hover:opacity-40 group-hover:duration-200'}`}></div>
+              <div className={`relative p-12 bg-zinc-900/80 backdrop-blur-xl border rounded-3xl flex flex-col items-center text-center border-dashed transition-colors ${isDragging ? 'border-indigo-400' : 'border-zinc-800 group-hover:border-indigo-500/50'}`}>
                 <div className="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-6 border border-zinc-700/50">
                   <UploadCloud className="w-10 h-10 text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
                 </div>
@@ -81,7 +134,14 @@ Resources:
                   Drag and drop your video file (.mp4) and transcript (.txt/.md) here to begin AI metadata generation.
                 </p>
                 <div className="flex gap-4">
-                  <button className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors">
+                  <input 
+                    type="file" 
+                    multiple 
+                    className="hidden" 
+                    ref={fileInputRef} 
+                    onChange={(e) => e.target.files && processFiles(e.target.files)} 
+                  />
+                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors">
                     Browse Files
                   </button>
                 </div>
@@ -189,7 +249,7 @@ Resources:
                   <div className="space-y-2 text-sm bg-zinc-950 p-4 rounded-xl border border-zinc-800/50">
                     <div className="flex items-center justify-between text-emerald-400">
                       <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Video File</span>
-                      <span className="text-xs">124 MB</span>
+                      <span className="text-xs truncate max-w-[120px]">{videoFile ? videoFile.name : 'Unknown.mp4'}</span>
                     </div>
                     <div className="flex items-center justify-between text-emerald-400">
                       <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Metadata</span>
