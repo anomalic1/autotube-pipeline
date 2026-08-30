@@ -1,7 +1,15 @@
-import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
+
+export interface Session {
+  id: string;
+  date: string;
+  videoName: string;
+  titles: string[];
+  description: string;
+}
 
 export default function Dashboard() {
   const [appState, setAppState] = useState<ProcessState>('idle');
@@ -12,14 +20,24 @@ export default function Dashboard() {
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
   const [apiModel, setApiModel] = useState(() => sessionStorage.getItem('apiModel') || 'gpt-3.5-turbo');
 
+  // Sessions state
+  const [sessions, setSessions] = useState<Session[]>(() => {
+    const saved = localStorage.getItem('autotube_sessions');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   // File state
-  const [videoFile, setVideoFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   // Generated Data
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
+  const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
+
+  useEffect(() => {
+    localStorage.setItem('autotube_sessions', JSON.stringify(sessions));
+  }, [sessions]);
 
   const saveSettings = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,11 +49,12 @@ export default function Dashboard() {
 
   const processFiles = async (files: FileList) => {
     let transcriptText = '';
+    let foundVideoName = 'Unknown.mp4';
     
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (file.type.startsWith('video/')) {
-        setVideoFile(file);
+        foundVideoName = file.name;
       } else if (file.name.endsWith('.txt') || file.name.endsWith('.md')) {
         transcriptText = await file.text();
       }
@@ -51,6 +70,7 @@ export default function Dashboard() {
       return;
     }
 
+    setCurrentVideoName(foundVideoName);
     setAppState('processing');
 
     try {
@@ -74,8 +94,22 @@ export default function Dashboard() {
       const data = await response.json();
       const content = JSON.parse(data.choices[0].message.content);
       
-      setGeneratedTitles(content.titles || ["Title 1", "Title 2", "Title 3"]);
-      setGeneratedDescription(content.description || "Description generated.");
+      const titles = content.titles || ["Title 1", "Title 2", "Title 3"];
+      const description = content.description || "Description generated.";
+
+      setGeneratedTitles(titles);
+      setGeneratedDescription(description);
+      
+      // Save session
+      const newSession: Session = {
+        id: Date.now().toString(),
+        date: new Date().toLocaleString(),
+        videoName: foundVideoName,
+        titles,
+        description
+      };
+      setSessions([newSession, ...sessions]);
+
       setAppState('review');
     } catch (err) {
       console.error(err);
@@ -90,6 +124,18 @@ export default function Dashboard() {
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processFiles(e.dataTransfer.files);
     }
+  };
+
+  const loadSession = (session: Session) => {
+    setCurrentVideoName(session.videoName);
+    setGeneratedTitles(session.titles);
+    setGeneratedDescription(session.description);
+    setAppState('review');
+  };
+
+  const deleteSession = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setSessions(sessions.filter(s => s.id !== id));
   };
 
   return (
@@ -117,9 +163,11 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* State 1: Dropzone */}
+        {/* State 1: Dropzone & History */}
         {appState === 'idle' && (
-          <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center justify-center pt-12">
+          <div className="animate-in fade-in zoom-in duration-500 flex flex-col items-center justify-center pt-8 space-y-12">
+            
+            {/* Dropzone */}
             <div 
               className="w-full max-w-3xl relative group"
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -149,6 +197,36 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Session History */}
+            {sessions.length > 0 && (
+              <div className="w-full max-w-3xl">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <History className="w-5 h-5 text-indigo-400" />
+                  Recent Sessions
+                </h3>
+                <div className="grid gap-3">
+                  {sessions.map((session) => (
+                    <div 
+                      key={session.id}
+                      onClick={() => loadSession(session)}
+                      className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-800/50 cursor-pointer transition-all group"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium text-zinc-200">{session.videoName}</span>
+                        <span className="text-xs text-zinc-500">{session.date}</span>
+                      </div>
+                      <button 
+                        onClick={(e) => deleteSession(e, session.id)}
+                        className="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -171,112 +249,126 @@ export default function Dashboard() {
 
         {/* State 3: Review Dashboard */}
         {appState === 'review' && (
-          <div className="animate-in slide-in-from-bottom-4 fade-in duration-700 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="animate-in slide-in-from-bottom-4 fade-in duration-700 flex flex-col gap-8">
             
-            {/* Left Column: Metadata Editor */}
-            <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-center">
+              <button 
+                onClick={() => setAppState('idle')}
+                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
-              {/* Title Selection */}
-              <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-indigo-400" />
-                  Select a High-Converting Title
-                </h2>
-                <div className="space-y-3">
-                  {generatedTitles.map((title, idx) => (
-                    <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
-                      <input 
-                        type="radio" 
-                        name="title" 
-                        className="sr-only" 
-                        checked={selectedTitle === idx} 
-                        onChange={() => setSelectedTitle(idx)}
-                      />
-                      <span className="flex flex-1">
-                        <span className="flex flex-col">
-                          <span className="block text-sm font-medium text-zinc-200">{title}</span>
-                        </span>
-                      </span>
-                      <CheckCircle2 className={`w-5 h-5 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Description Editor */}
-              <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-400" />
-                  SEO Description & Chapters
-                </h2>
-                <textarea 
-                  className="flex-1 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar"
-                  defaultValue={generatedDescription}
-                />
-                <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
-                   <div className="flex-1">
-                      <label className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
-                      <input 
-                        type="text" 
-                        defaultValue="AI, YouTube Automation, Cloudflare Pages, Vite, React"
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-                      />
-                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Publishing Pipeline */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 sticky top-6">
-                <h2 className="text-lg font-semibold mb-6">Publishing Pipeline</h2>
+              {/* Left Column: Metadata Editor */}
+              <div className="lg:col-span-8 space-y-6">
                 
-                <div className="space-y-6 mb-8">
-                  {/* Visibility Setting */}
+                {/* Title Selection */}
+                <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6">
+                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-indigo-400" />
+                    Select a High-Converting Title
+                  </h2>
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-zinc-400">Visibility</label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300">
-                        <Lock className="w-5 h-5 mb-1" />
-                        <span className="text-xs">Private</span>
-                      </button>
-                      <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors">
-                        <Clock className="w-5 h-5 mb-1" />
-                        <span className="text-xs">Schedule</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Status checklist */}
-                  <div className="space-y-2 text-sm bg-zinc-950 p-4 rounded-xl border border-zinc-800/50">
-                    <div className="flex items-center justify-between text-emerald-400">
-                      <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Video File</span>
-                      <span className="text-xs truncate max-w-[120px]">{videoFile ? videoFile.name : 'Unknown.mp4'}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-emerald-400">
-                      <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Metadata</span>
-                      <span className="text-xs">Ready</span>
-                    </div>
-                    <div className="flex items-center justify-between text-zinc-500">
-                      <span className="flex items-center gap-2"><Lock className="w-4 h-4" /> Auth Status</span>
-                      <span className="text-xs">Not Linked</span>
-                    </div>
+                    {generatedTitles.map((title, idx) => (
+                      <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
+                        <input 
+                          type="radio" 
+                          name="title" 
+                          className="sr-only" 
+                          checked={selectedTitle === idx} 
+                          onChange={() => setSelectedTitle(idx)}
+                        />
+                        <span className="flex flex-1">
+                          <span className="flex flex-col">
+                            <span className="block text-sm font-medium text-zinc-200">{title}</span>
+                          </span>
+                        </span>
+                        <CheckCircle2 className={`w-5 h-5 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
+                      </label>
+                    ))}
                   </div>
                 </div>
 
-                <button className="w-full relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-                  <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
-                    <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
-                    <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
+                {/* Description Editor */}
+                <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
+                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-indigo-400" />
+                    SEO Description & Chapters
+                  </h2>
+                  <textarea 
+                    className="flex-1 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar"
+                    value={generatedDescription}
+                    onChange={(e) => setGeneratedDescription(e.target.value)}
+                  />
+                  <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
+                     <div className="flex-1">
+                        <label className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
+                        <input 
+                          type="text" 
+                          defaultValue="AI, YouTube Automation, Cloudflare Pages, Vite, React"
+                          className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                        />
+                     </div>
                   </div>
-                </button>
-                <p className="text-xs text-center text-zinc-600 mt-4">
-                  Powered by Cloudflare Edge & YouTube Data API
-                </p>
+                </div>
               </div>
-            </div>
 
+              {/* Right Column: Publishing Pipeline */}
+              <div className="lg:col-span-4 space-y-6">
+                <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 sticky top-6">
+                  <h2 className="text-lg font-semibold mb-6">Publishing Pipeline</h2>
+                  
+                  <div className="space-y-6 mb-8">
+                    {/* Visibility Setting */}
+                    <div className="space-y-3">
+                      <label className="text-sm font-medium text-zinc-400">Visibility</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300">
+                          <Lock className="w-5 h-5 mb-1" />
+                          <span className="text-xs">Private</span>
+                        </button>
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors">
+                          <Clock className="w-5 h-5 mb-1" />
+                          <span className="text-xs">Schedule</span>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Status checklist */}
+                    <div className="space-y-2 text-sm bg-zinc-950 p-4 rounded-xl border border-zinc-800/50">
+                      <div className="flex items-center justify-between text-emerald-400">
+                        <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Video File</span>
+                        <span className="text-xs truncate max-w-[120px]">{currentVideoName}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-emerald-400">
+                        <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Metadata</span>
+                        <span className="text-xs">Ready</span>
+                      </div>
+                      <div className="flex items-center justify-between text-zinc-500">
+                        <span className="flex items-center gap-2"><Lock className="w-4 h-4" /> Auth Status</span>
+                        <span className="text-xs">Not Linked</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button className="w-full relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
+                    <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
+                      <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                      <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
+                    </div>
+                  </button>
+                  <p className="text-xs text-center text-zinc-600 mt-4">
+                    Powered by Cloudflare Edge & YouTube Data API
+                  </p>
+                </div>
+              </div>
+
+            </div>
           </div>
         )}
 
