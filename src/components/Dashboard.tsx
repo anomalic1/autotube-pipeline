@@ -153,7 +153,7 @@ export default function Dashboard() {
             </h1>
           </div>
           <div className="flex items-center space-x-4 text-sm font-medium">
-            <button onClick={() => setShowSettings(true)} className="p-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 transition-colors">
+            <button aria-label="Settings" title="Settings" onClick={() => setShowSettings(true)} className="p-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
               <Settings className="w-5 h-5" />
             </button>
             <span className="flex items-center text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full border border-emerald-400/20">
@@ -217,8 +217,10 @@ export default function Dashboard() {
                         <span className="text-xs text-zinc-500">{session.date}</span>
                       </div>
                       <button 
+                        aria-label="Delete Session"
+                        title="Delete Session"
                         onClick={(e) => deleteSession(e, session.id)}
-                        className="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 transition-all"
+                        className="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -306,8 +308,9 @@ export default function Dashboard() {
                   />
                   <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
                      <div className="flex-1">
-                        <label className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
+                        <label htmlFor="tags" className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
                         <input 
+                          id="tags"
                           type="text" 
                           defaultValue="AI, YouTube Automation, Cloudflare Pages, Vite, React"
                           className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -379,8 +382,9 @@ export default function Dashboard() {
               <h2 className="text-xl font-bold mb-4">API Settings</h2>
               <form onSubmit={saveSettings} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">API URL</label>
+                  <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">API URL</label>
                   <input 
+                    id="apiUrl"
                     type="url" 
                     value={apiUrl}
                     onChange={(e) => setApiUrl(e.target.value)}
@@ -389,8 +393,9 @@ export default function Dashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">API Key</label>
+                  <label htmlFor="apiKey" className="block text-sm text-zinc-400 mb-1">API Key</label>
                   <input 
+                    id="apiKey"
                     type="password" 
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
@@ -399,8 +404,9 @@ export default function Dashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-1">API Model</label>
+                  <label htmlFor="apiModel" className="block text-sm text-zinc-400 mb-1">API Model</label>
                   <input 
+                    id="apiModel"
                     type="text" 
                     value={apiModel}
                     onChange={(e) => setApiModel(e.target.value)}
