@@ -15,6 +15,8 @@ export default function Dashboard() {
   const [appState, setAppState] = useState<ProcessState>('idle');
   const [selectedTitle, setSelectedTitle] = useState<number>(0);
   
+  const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
+
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(() => sessionStorage.getItem('apiUrl') || 'https://api.openai.com/v1/chat/completions');
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
@@ -38,6 +40,18 @@ export default function Dashboard() {
   useEffect(() => {
     localStorage.setItem('autotube_sessions', JSON.stringify(sessions));
   }, [sessions]);
+
+  // Global Escape key support to close modals
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowSettings(false);
+        setSessionToDelete(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const saveSettings = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,9 +147,16 @@ export default function Dashboard() {
     setAppState('review');
   };
 
-  const deleteSession = (e: React.MouseEvent, id: string) => {
+  const confirmDeleteSession = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    setSessions(sessions.filter(s => s.id !== id));
+    setSessionToDelete(id);
+  };
+
+  const deleteSession = () => {
+    if (sessionToDelete) {
+      setSessions(sessions.filter(s => s.id !== sessionToDelete));
+      setSessionToDelete(null);
+    }
   };
 
   return (
@@ -219,7 +240,7 @@ export default function Dashboard() {
                       <button 
                         aria-label="Delete Session"
                         title="Delete Session"
-                        onClick={(e) => deleteSession(e, session.id)}
+                        onClick={(e) => confirmDeleteSession(e, session.id)}
                         className="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -375,11 +396,25 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Delete Confirmation Modal */}
+        {sessionToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setSessionToDelete(null)}>
+            <div role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+              <h2 id="delete-dialog-title" className="text-xl font-bold mb-4">Delete Session?</h2>
+              <p className="text-zinc-400 mb-6">Are you sure you want to delete this session? This action cannot be undone.</p>
+              <div className="flex justify-end gap-3">
+                <button onClick={() => setSessionToDelete(null)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Cancel</button>
+                <button onClick={deleteSession} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-colors">Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Settings Modal */}
         {showSettings && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-            <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md">
-              <h2 className="text-xl font-bold mb-4">API Settings</h2>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
+            <div role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+              <h2 id="settings-dialog-title" className="text-xl font-bold mb-4">API Settings</h2>
               <form onSubmit={saveSettings} className="space-y-4">
                 <div>
                   <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">API URL</label>
