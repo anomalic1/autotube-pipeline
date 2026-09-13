@@ -212,7 +212,7 @@ export default function Dashboard() {
                     ref={fileInputRef} 
                     onChange={(e) => e.target.files && processFiles(e.target.files)} 
                   />
-                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors">
+                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none">
                     Browse Files
                   </button>
                 </div>
@@ -277,7 +277,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <button 
                 onClick={() => setAppState('idle')}
-                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded-md px-2 py-1 -ml-2"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Home
@@ -351,11 +351,11 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       <label className="text-sm font-medium text-zinc-400">Visibility</label>
                       <div className="grid grid-cols-2 gap-3">
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300">
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none">
                           <Lock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Private</span>
                         </button>
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors">
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none">
                           <Clock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Schedule</span>
                         </button>
@@ -379,7 +379,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <button className="w-full relative group">
+                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none rounded-xl">
                     <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                     <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
                       <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
@@ -450,8 +450,8 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors">Save</button>
+                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none">Save</button>
                 </div>
               </form>
             </div>
