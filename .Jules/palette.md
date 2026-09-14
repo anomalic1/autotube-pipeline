@@ -5,3 +5,7 @@
 ## 2024-05-18 - Missing destructive action confirmation
 **Learning:** Found that deleting a session history item was immediate and irreversible on a single click, which is poor UX for a destructive action.
 **Action:** When encountering a destructive action (like delete), always implement a confirmation step (e.g., a modal dialog). The modal must be accessible (`role="dialog"`, `aria-modal="true"`) and support keyboard navigation (Escape to close, proper focus visible styles on buttons).
+
+## 2024-05-19 - Interactive div elements missing keyboard support
+**Learning:** Found that custom interactive components (like the Session History card and custom radio buttons) lack keyboard support. Screen readers and keyboard users cannot interact with a `div` or label that only has an `onClick` handler.
+**Action:** When building interactive elements without native HTML buttons or inputs, always ensure they are keyboard accessible. Add `role="button"`, `tabIndex={0}`, and an `onKeyDown` handler (listening for `Enter` and `Space`) for `div`s. For custom radio buttons, use `has-[:focus-visible]` on the parent to visually show focus.

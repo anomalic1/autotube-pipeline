@@ -212,7 +212,7 @@ export default function Dashboard() {
                     ref={fileInputRef} 
                     onChange={(e) => e.target.files && processFiles(e.target.files)} 
                   />
-                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors">
+                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                     Browse Files
                   </button>
                 </div>
@@ -230,8 +230,16 @@ export default function Dashboard() {
                   {sessions.map((session) => (
                     <div 
                       key={session.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => loadSession(session)}
-                      className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-800/50 cursor-pointer transition-all group"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          loadSession(session);
+                        }
+                      }}
+                      className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-800/50 cursor-pointer transition-all group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                     >
                       <div className="flex flex-col">
                         <span className="font-medium text-zinc-200">{session.videoName}</span>
@@ -277,7 +285,7 @@ export default function Dashboard() {
             <div className="flex items-center">
               <button 
                 onClick={() => setAppState('idle')}
-                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
+                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-zinc-100 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-lg p-1 -ml-1"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Home
@@ -297,7 +305,7 @@ export default function Dashboard() {
                   </h2>
                   <div className="space-y-3">
                     {generatedTitles.map((title, idx) => (
-                      <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
+                      <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
                         <input 
                           type="radio" 
                           name="title" 
@@ -351,11 +359,11 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       <label className="text-sm font-medium text-zinc-400">Visibility</label>
                       <div className="grid grid-cols-2 gap-3">
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300">
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                           <Lock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Private</span>
                         </button>
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors">
+                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                           <Clock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Schedule</span>
                         </button>
@@ -379,7 +387,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <button className="w-full relative group">
+                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl">
                     <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
                     <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
                       <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
