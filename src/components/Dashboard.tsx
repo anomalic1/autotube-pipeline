@@ -196,25 +196,31 @@ export default function Dashboard() {
               onDrop={handleDrop}
             >
               <div className={`absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl blur transition duration-1000 ${isDragging ? 'opacity-70' : 'opacity-25 group-hover:opacity-40 group-hover:duration-200'}`}></div>
-              <div className={`relative p-12 bg-zinc-900/80 backdrop-blur-xl border rounded-3xl flex flex-col items-center text-center border-dashed transition-colors ${isDragging ? 'border-indigo-400' : 'border-zinc-800 group-hover:border-indigo-500/50'}`}>
-                <div className="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-6 border border-zinc-700/50">
-                  <UploadCloud className="w-10 h-10 text-indigo-400 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-                <h3 className="text-2xl font-semibold mb-2">Initialize Pipeline</h3>
-                <p className="text-zinc-400 max-w-md mb-8">
-                  Drag and drop your video file (.mp4) and transcript (.txt/.md) here to begin AI metadata generation.
-                </p>
-                <div className="flex gap-4">
-                  <input 
-                    type="file" 
-                    multiple 
-                    className="hidden" 
-                    ref={fileInputRef} 
-                    onChange={(e) => e.target.files && processFiles(e.target.files)} 
-                  />
-                  <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
-                    Browse Files
-                  </button>
+              <div className={`relative p-12 bg-zinc-900/80 backdrop-blur-xl border rounded-3xl flex flex-col items-center text-center border-dashed transition-all duration-300 ${isDragging ? 'border-indigo-400 bg-indigo-500/5 scale-[1.02]' : 'border-zinc-800 group-hover:border-indigo-500/50'}`}>
+                <div className={`flex flex-col items-center w-full ${isDragging ? 'pointer-events-none' : ''}`}>
+                  <div className={`w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-6 border transition-colors ${isDragging ? 'border-indigo-500/50 bg-indigo-500/10' : 'border-zinc-700/50'}`}>
+                    <UploadCloud className={`w-10 h-10 text-indigo-400 transition-all duration-300 ${isDragging ? 'scale-110 -translate-y-1' : 'group-hover:scale-110'}`} />
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-2">
+                    {isDragging ? 'Drop files to process' : 'Initialize Pipeline'}
+                  </h3>
+                  <p className="text-zinc-400 max-w-md mb-8">
+                    {isDragging
+                      ? 'Release to start generating SEO metadata.'
+                      : 'Drag and drop your video file (.mp4) and transcript (.txt/.md) here to begin AI metadata generation.'}
+                  </p>
+                  <div className="flex gap-4 pointer-events-auto">
+                    <input
+                      type="file"
+                      multiple
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={(e) => e.target.files && processFiles(e.target.files)}
+                    />
+                    <button onClick={() => fileInputRef.current?.click()} className="px-6 py-3 rounded-full bg-zinc-100 text-zinc-900 font-semibold hover:bg-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
+                      Browse Files
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -326,11 +332,12 @@ export default function Dashboard() {
 
                 {/* Description Editor */}
                 <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
-                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <h2 id="seo-description-label" className="text-lg font-semibold mb-4 flex items-center gap-2">
                     <FileText className="w-5 h-5 text-indigo-400" />
                     SEO Description & Chapters
                   </h2>
                   <textarea 
+                    aria-labelledby="seo-description-label"
                     className="flex-1 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar"
                     value={generatedDescription}
                     onChange={(e) => setGeneratedDescription(e.target.value)}
