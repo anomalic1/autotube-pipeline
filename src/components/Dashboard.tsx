@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, Copy, Check } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -36,6 +36,7 @@ export default function Dashboard() {
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('autotube_sessions', JSON.stringify(sessions));
@@ -157,6 +158,13 @@ export default function Dashboard() {
       setSessions(sessions.filter(s => s.id !== sessionToDelete));
       setSessionToDelete(null);
     }
+  };
+
+  const handleCopy = () => {
+    if (!generatedDescription) return;
+    navigator.clipboard.writeText(generatedDescription);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
@@ -326,11 +334,23 @@ export default function Dashboard() {
 
                 {/* Description Editor */}
                 <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
-                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-indigo-400" />
-                    SEO Description & Chapters
-                  </h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 id="description-heading" className="text-lg font-semibold flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-indigo-400" />
+                      SEO Description & Chapters
+                    </h2>
+                    <button
+                      aria-label="Copy description to clipboard"
+                      title="Copy Description"
+                      onClick={handleCopy}
+                      className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-300 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
+                    >
+                      {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      <span>{isCopied ? 'Copied!' : 'Copy'}</span>
+                    </button>
+                  </div>
                   <textarea 
+                    aria-labelledby="description-heading"
                     className="flex-1 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar"
                     value={generatedDescription}
                     onChange={(e) => setGeneratedDescription(e.target.value)}
