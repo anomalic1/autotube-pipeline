@@ -9,3 +9,7 @@
 ## 2024-05-19 - Interactive div elements missing keyboard support
 **Learning:** Found that custom interactive components (like the Session History card and custom radio buttons) lack keyboard support. Screen readers and keyboard users cannot interact with a `div` or label that only has an `onClick` handler.
 **Action:** When building interactive elements without native HTML buttons or inputs, always ensure they are keyboard accessible. Add `role="button"`, `tabIndex={0}`, and an `onKeyDown` handler (listening for `Enter` and `Space`) for `div`s. For custom radio buttons, use `has-[:focus-visible]` on the parent to visually show focus.
+
+## 2024-05-19 - Accessible AI text output & copy actions
+**Learning:** Found that the AI-generated SEO description `textarea` lacked an accessible name, making it difficult for screen readers to identify its purpose, and users had no quick way to copy the large block of generated text.
+**Action:** When presenting large blocks of generated text in a `textarea`, always provide an accessible name by tying it to a visible heading (e.g., using `aria-labelledby`). Furthermore, always provide a one-click "Copy" utility button with visual feedback and clear `aria-label`s for both its default and "Copied" states to enhance usability.
