@@ -326,14 +326,24 @@ export default function Dashboard() {
 
                 {/* Description Editor */}
                 <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
-                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-indigo-400" />
-                    SEO Description & Chapters
-                  </h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <label htmlFor="description-editor" className="text-lg font-semibold flex items-center gap-2 cursor-pointer">
+                      <FileText className="w-5 h-5 text-indigo-400" />
+                      SEO Description & Chapters
+                    </label>
+                    <span
+                      className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
+                      aria-live="polite"
+                    >
+                      {generatedDescription.length} / 5000
+                    </span>
+                  </div>
                   <textarea 
-                    className="flex-1 w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar"
+                    id="description-editor"
+                    className={`flex-1 w-full bg-zinc-950 border rounded-xl p-4 text-sm text-zinc-300 focus:ring-2 focus:border-transparent outline-none resize-none transition-shadow custom-scrollbar ${generatedDescription.length > 5000 ? 'border-red-500/50 focus:ring-red-500' : 'border-zinc-800 focus:ring-indigo-500'}`}
                     value={generatedDescription}
                     onChange={(e) => setGeneratedDescription(e.target.value)}
+                    aria-invalid={generatedDescription.length > 5000}
                   />
                   <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
                      <div className="flex-1">
