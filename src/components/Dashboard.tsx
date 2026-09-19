@@ -208,6 +208,7 @@ export default function Dashboard() {
                   <input 
                     type="file" 
                     multiple 
+                    accept="video/*,.txt,.md"
                     className="hidden" 
                     ref={fileInputRef} 
                     onChange={(e) => e.target.files && processFiles(e.target.files)} 
