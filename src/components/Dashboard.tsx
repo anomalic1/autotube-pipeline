@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -16,6 +16,9 @@ export default function Dashboard() {
   const [selectedTitle, setSelectedTitle] = useState<number>(0);
   
   const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
+
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+  const errorTimeout = useRef<number | null>(null);
 
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(() => sessionStorage.getItem('apiUrl') || 'https://api.openai.com/v1/chat/completions');
@@ -53,6 +56,16 @@ export default function Dashboard() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const showError = (message: string) => {
+    if (errorTimeout.current) {
+      clearTimeout(errorTimeout.current);
+    }
+    setErrorToast(message);
+    errorTimeout.current = window.setTimeout(() => {
+      setErrorToast(null);
+    }, 5000);
+  };
+
   const saveSettings = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem('apiUrl', apiUrl);
@@ -75,11 +88,11 @@ export default function Dashboard() {
     }
 
     if (!transcriptText) {
-      alert("Please upload a transcript file (.txt or .md)");
+      showError("Please upload a transcript file (.txt or .md)");
       return;
     }
     if (!apiKey) {
-      alert("Please configure your API Key in Settings first.");
+      showError("Please configure your API Key in Settings first.");
       setShowSettings(true);
       return;
     }
@@ -127,7 +140,7 @@ export default function Dashboard() {
       setAppState('review');
     } catch (err) {
       console.error(err);
-      alert("Error generating metadata. Check API URL and Key, or CORS issues.");
+      showError("Error generating metadata. Check API URL and Key, or CORS issues.");
       setAppState('idle');
     }
   };
@@ -425,6 +438,26 @@ export default function Dashboard() {
                 <button onClick={() => setSessionToDelete(null)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Cancel</button>
                 <button onClick={deleteSession} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-colors">Delete</button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error Toast */}
+        {errorToast && (
+          <div
+            role="alert"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300"
+          >
+            <div className="bg-red-500/10 border border-red-500/20 backdrop-blur-md text-red-400 px-4 py-3 rounded-xl flex items-center shadow-lg shadow-red-500/5">
+              <AlertCircle className="w-5 h-5 mr-3 flex-shrink-0" />
+              <span className="text-sm font-medium mr-8">{errorToast}</span>
+              <button
+                onClick={() => setErrorToast(null)}
+                aria-label="Dismiss error"
+                className="p-1 rounded-lg hover:bg-red-500/20 transition-colors focus-visible:ring-2 focus-visible:ring-red-500 outline-none flex-shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           </div>
         )}
