@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X, Copy } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('autotube_sessions', JSON.stringify(sessions));
@@ -345,12 +346,27 @@ export default function Dashboard() {
                       <FileText className="w-5 h-5 text-indigo-400" />
                       SEO Description & Chapters
                     </label>
-                    <span
-                      className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
-                      aria-live="polite"
-                    >
-                      {generatedDescription.length} / 5000
-                    </span>
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(generatedDescription);
+                          setCopied(true);
+                          window.setTimeout(() => setCopied(false), 2000);
+                        }}
+                        aria-label="Copy description to clipboard"
+                        className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-lg px-2 py-1 hover:bg-zinc-800/50"
+                      >
+                        {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                        {copied ? 'Copied!' : 'Copy'}
+                      </button>
+                      <span
+                        className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
+                        aria-live="polite"
+                      >
+                        {generatedDescription.length} / 5000
+                      </span>
+                    </div>
                   </div>
                   <textarea 
                     id="description-editor"
