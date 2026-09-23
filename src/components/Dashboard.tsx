@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X, Copy } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -38,6 +38,7 @@ export default function Dashboard() {
   // Generated Data
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
 
   useEffect(() => {
@@ -169,6 +170,17 @@ export default function Dashboard() {
     if (sessionToDelete) {
       setSessions(sessions.filter(s => s.id !== sessionToDelete));
       setSessionToDelete(null);
+    }
+  };
+
+  const copyDescription = async () => {
+    if (!generatedDescription) return;
+    try {
+      await navigator.clipboard.writeText(generatedDescription);
+      setIsCopied(true);
+      window.setTimeout(() => setIsCopied(false), 2000);
+    } catch {
+      showError("Failed to copy text to clipboard");
     }
   };
 
@@ -341,10 +353,27 @@ export default function Dashboard() {
                 {/* Description Editor */}
                 <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6 flex flex-col h-[500px]">
                   <div className="flex items-center justify-between mb-4">
-                    <label htmlFor="description-editor" className="text-lg font-semibold flex items-center gap-2 cursor-pointer">
-                      <FileText className="w-5 h-5 text-indigo-400" />
-                      SEO Description & Chapters
-                    </label>
+                    <div className="flex items-center gap-3">
+                      <label htmlFor="description-editor" className="text-lg font-semibold flex items-center gap-2 cursor-pointer">
+                        <FileText className="w-5 h-5 text-indigo-400" />
+                        SEO Description & Chapters
+                      </label>
+                      <button
+                        onClick={copyDescription}
+                        aria-label="Copy description to clipboard"
+                        title="Copy description"
+                        className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-all focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none flex items-center gap-1.5"
+                      >
+                        {isCopied ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <span className="text-xs font-medium text-emerald-400">Copied!</span>
+                          </>
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                     <span
                       className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
                       aria-live="polite"
