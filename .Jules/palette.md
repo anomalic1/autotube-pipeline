@@ -8,3 +8,7 @@
 ## 2024-09-20 - Replace blocking alert() with accessible toast
 **Learning:** Native `alert()` dialogs block the UI thread and provide a jarring, unstyled user experience that cannot be customized for accessibility or branding. Users prefer non-blocking notifications.
 **Action:** Replace `alert()` calls with accessible, auto-dismissing in-app toast banners (using `role="alert"`) across applications.
+
+## 2024-10-24 - Safe Default Focus for Destructive Modals
+**Learning:** When destructive modals (like a "Delete Session" confirmation) open, screen readers immediately read the title, but might miss critical context if `aria-describedby` isn't used. Furthermore, if a user accidentally double-taps Enter or presses it hastily when a modal appears, mapping default focus to the destructive action causes unintended data loss.
+**Action:** Always map the main explanatory paragraph of a modal using `aria-describedby` on the dialog container. Always add `autoFocus` to the "Cancel" or safe default button in destructive modals to prevent accidental execution via rapid keyboard interaction.

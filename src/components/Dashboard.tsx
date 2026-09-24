@@ -431,11 +431,11 @@ export default function Dashboard() {
         {/* Delete Confirmation Modal */}
         {sessionToDelete && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setSessionToDelete(null)}>
-            <div role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-desc" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
               <h2 id="delete-dialog-title" className="text-xl font-bold mb-4">Delete Session?</h2>
-              <p className="text-zinc-400 mb-6">Are you sure you want to delete this session? This action cannot be undone.</p>
+              <p id="delete-dialog-desc" className="text-zinc-400 mb-6">Are you sure you want to delete this session? This action cannot be undone.</p>
               <div className="flex justify-end gap-3">
-                <button onClick={() => setSessionToDelete(null)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Cancel</button>
+                <button autoFocus onClick={() => setSessionToDelete(null)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Cancel</button>
                 <button onClick={deleteSession} className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-colors">Delete</button>
               </div>
             </div>
