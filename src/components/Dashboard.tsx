@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X, Copy, Check } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -39,6 +39,23 @@ export default function Dashboard() {
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
+
+  const [isCopied, setIsCopied] = useState(false);
+  const copyTimeout = useRef<number | null>(null);
+
+  const handleCopyDescription = () => {
+    if (!generatedDescription) return;
+    navigator.clipboard.writeText(generatedDescription);
+    setIsCopied(true);
+
+    if (copyTimeout.current) {
+      clearTimeout(copyTimeout.current);
+    }
+
+    copyTimeout.current = window.setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   useEffect(() => {
     localStorage.setItem('autotube_sessions', JSON.stringify(sessions));
@@ -345,12 +362,22 @@ export default function Dashboard() {
                       <FileText className="w-5 h-5 text-indigo-400" />
                       SEO Description & Chapters
                     </label>
-                    <span
-                      className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
-                      aria-live="polite"
-                    >
-                      {generatedDescription.length} / 5000
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-xs ${generatedDescription.length > 5000 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
+                        aria-live="polite"
+                      >
+                        {generatedDescription.length} / 5000
+                      </span>
+                      <button
+                        onClick={handleCopyDescription}
+                        aria-label="Copy description"
+                        title="Copy description"
+                        className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
+                      >
+                        {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                   <textarea 
                     id="description-editor"
