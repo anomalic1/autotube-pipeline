@@ -410,11 +410,11 @@ export default function Dashboard() {
                     <div className="space-y-3">
                       <label className="text-sm font-medium text-zinc-400">Visibility</label>
                       <div className="grid grid-cols-2 gap-3">
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
+                        <button aria-pressed="true" className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                           <Lock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Private</span>
                         </button>
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
+                        <button aria-pressed="false" className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
                           <Clock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Schedule</span>
                         </button>
@@ -496,7 +496,9 @@ export default function Dashboard() {
               <h2 id="settings-dialog-title" className="text-xl font-bold mb-4">API Settings</h2>
               <form onSubmit={saveSettings} className="space-y-4">
                 <div>
-                  <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">API URL</label>
+                  <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">
+                    API URL <span className="text-red-500" aria-hidden="true">*</span>
+                  </label>
                   <input 
                     id="apiUrl"
                     type="url" 
@@ -529,8 +531,8 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors">Save</button>
+                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 outline-none">Save</button>
                 </div>
               </form>
             </div>

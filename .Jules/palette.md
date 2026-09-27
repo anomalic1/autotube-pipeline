@@ -11,3 +11,7 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+
+## 2024-09-27 - Custom Toggle Buttons Accessibility
+**Learning:** When building custom UI toggle groups (like segmented controls or visibility selectors) that function as radio buttons, visual styling (like borders or backgrounds) is insufficient for screen readers. Screen reader users will not know which option is currently selected.
+**Action:** Always add `aria-pressed="true"` (or `aria-checked="true"` depending on the role) to the active button and `false` to the inactive buttons in custom toggle groups to communicate their selected state.
