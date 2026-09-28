@@ -11,3 +11,7 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+
+## 2025-02-12 - Sensitive Field Visibility Toggle
+**Learning:** Masking sensitive inputs (like API keys) is good for security, but without a way to temporarily view the input, users are forced to re-paste the entire key if they suspect a typo, which is a frustrating experience.
+**Action:** Always provide an accessible visibility toggle (like an eye icon button with an `aria-label`) on sensitive input fields to allow users to temporarily unmask and verify the content.
