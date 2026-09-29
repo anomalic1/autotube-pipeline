@@ -438,11 +438,14 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-                    <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
-                      <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
-                      <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
+                  <button
+                    disabled
+                    title="YouTube account not linked"
+                    className="w-full relative focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl cursor-not-allowed opacity-60"
+                  >
+                    <div className="relative w-full bg-zinc-900 border border-zinc-800 px-6 py-4 rounded-xl flex items-center justify-center gap-3 transition-colors">
+                      <Lock className="w-5 h-5 text-zinc-500" />
+                      <span className="font-semibold tracking-wide text-zinc-500">Push to YouTube</span>
                     </div>
                   </button>
                   <p className="text-xs text-center text-zinc-600 mt-4">

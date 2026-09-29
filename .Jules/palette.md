@@ -11,3 +11,6 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+## 2026-09-29 - Disabled Call-to-Action Feedback
+**Learning:** Glowing primary action buttons can be highly misleading when prerequisite steps (like Auth) are incomplete.
+**Action:** Always align primary action button states (disabled/enabled) with their dependencies (like Auth Status) and provide a descriptive tooltip explaining the disabled state.
