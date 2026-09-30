@@ -11,3 +11,7 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+
+## 2024-05-25 - Interactive States for Buttons
+**Learning:** Hardcoding static buttons that look interactive but lack state confuses users and leaves screen reader users completely unaware of the button's purpose and state.
+**Action:** Ensure all interactive elements that behave as toggles or selectors use appropriate semantic attributes like `aria-pressed`, and are backed by state to reflect their active/inactive status both visually and programmatically.
