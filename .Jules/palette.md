@@ -11,3 +11,7 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+
+## 2024-10-04 - Clickable Cards with Secondary Actions
+**Learning:** Using a single interactive element (like `role="button"`) on a large card that also contains other interactive elements (like a delete button) creates accessibility issues and violates HTML semantics (nested interactive controls).
+**Action:** For 'clickable card' UI patterns containing secondary actions, use a non-interactive `relative` container `div`, an `absolute inset-0` primary `<button>`, and `relative z-10` for secondary buttons to prevent nested interactive controls and maintain accessibility.
