@@ -261,18 +261,14 @@ export default function Dashboard() {
                   {sessions.map((session) => (
                     <div 
                       key={session.id}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => loadSession(session)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          loadSession(session);
-                        }
-                      }}
-                      className="flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-800/50 cursor-pointer transition-all group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
+                      className="relative flex items-center justify-between p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:border-indigo-500/50 hover:bg-zinc-800/50 transition-all group"
                     >
-                      <div className="flex flex-col">
+                      <button
+                        aria-label={`Load session for ${session.videoName}`}
+                        onClick={() => loadSession(session)}
+                        className="absolute inset-0 w-full h-full rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none cursor-pointer"
+                      />
+                      <div className="flex flex-col relative z-10 pointer-events-none">
                         <span className="font-medium text-zinc-200">{session.videoName}</span>
                         <span className="text-xs text-zinc-500">{session.date}</span>
                       </div>
@@ -280,7 +276,7 @@ export default function Dashboard() {
                         aria-label="Delete Session"
                         title="Delete Session"
                         onClick={(e) => confirmDeleteSession(e, session.id)}
-                        className="p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-all"
+                        className="relative z-10 p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
