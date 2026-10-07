@@ -11,3 +11,6 @@
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
+## 2024-10-07 - Clickable Card Accessibility Pattern
+**Learning:** Found a nested interactive controls accessibility issue (a delete `<button>` inside a `role="button"` div) in the Dashboard session cards. This pattern breaks screen readers and keyboard navigation (as you can't have a button inside a button).
+**Action:** Replaced the `role="button"` wrapper with a non-interactive `relative` container. Used an `absolute inset-0` primary `<button>` for the main card action, `pointer-events-none` on the text, and `relative z-10` on the secondary delete button. This prevents nested controls while maintaining the visual clickable card effect.
