@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X, Copy, Check } from 'lucide-react';
+import { UploadCloud, FileText, Loader2, MonitorPlay, Clock, Lock, Sparkles, CheckCircle2, Settings, ArrowLeft, Trash2, History, AlertCircle, X, Copy, Check, Eye, EyeOff } from 'lucide-react';
 
 type ProcessState = 'idle' | 'processing' | 'review';
 
@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [apiUrl, setApiUrl] = useState(() => sessionStorage.getItem('apiUrl') || 'https://api.openai.com/v1/chat/completions');
   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
+  const [showApiKey, setShowApiKey] = useState(false);
   const [apiModel, setApiModel] = useState(() => sessionStorage.getItem('apiModel') || 'gpt-3.5-turbo');
 
   // Sessions state
@@ -504,14 +505,24 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <label htmlFor="apiKey" className="block text-sm text-zinc-400 mb-1">API Key</label>
-                  <input 
-                    id="apiKey"
-                    type="password" 
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
-                    placeholder="sk-..."
-                  />
+                  <div className="relative">
+                    <input
+                      id="apiKey"
+                      type={showApiKey ? "text" : "password"}
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      placeholder="sk-..."
+                    />
+                    <button
+                      type="button"
+                      aria-label={showApiKey ? "Hide API Key" : "Show API Key"}
+                      onClick={() => setShowApiKey(!showApiKey)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-zinc-400 hover:text-zinc-200 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-md transition-colors"
+                    >
+                      {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label htmlFor="apiModel" className="block text-sm text-zinc-400 mb-1">API Model</label>
@@ -525,8 +536,8 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors">Save</button>
+                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none transition-colors">Save</button>
                 </div>
               </form>
             </div>

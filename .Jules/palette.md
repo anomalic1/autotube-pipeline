@@ -15,3 +15,6 @@
 ## 2024-09-26 - Accessible Clickable Cards with Secondary Actions
 **Learning:** Implementing "clickable cards" (where a whole card is a button but also contains secondary buttons like delete) using nested interactive elements or `onClick` on a container `div` is a severe accessibility anti-pattern. Screen readers struggle with nested interactive elements, and valid HTML does not allow buttons inside buttons.
 **Action:** Use a non-interactive `relative` container `div`. Place the primary action as an `absolute inset-0` `<button>`. Use `pointer-events-none` on textual content to prevent it from blocking clicks, and set secondary interactive elements (like a delete button) to `relative z-10` so they float above the main card action.
+## 2024-05-18 - API Key Visibility Toggle
+**Learning:** Credential inputs (like API Keys) can be long and prone to copy-paste errors (extra spaces, missed characters). Hiding them unconditionally causes user frustration when debugging connection errors due to malformed keys.
+**Action:** Always include a visibility toggle (eye icon) on credential inputs to allow users to verify their pasted keys, balancing security with usability.
