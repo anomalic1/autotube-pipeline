@@ -5,9 +5,11 @@
 ## 2026-09-19 - Native OS File Filtering UX
 **Learning:** Relying solely on application-level error handling (like `alert()` for wrong file types) creates a poor and frustrating user experience. Users shouldn't be able to easily make invalid selections in the first place.
 **Action:** Always add the `accept` attribute to file inputs to leverage native OS file pickers, naturally guiding the user to the correct files before they even attempt to submit.
+
 ## 2024-09-20 - Replace blocking alert() with accessible toast
 **Learning:** Native `alert()` dialogs block the UI thread and provide a jarring, unstyled user experience that cannot be customized for accessibility or branding. Users prefer non-blocking notifications.
 **Action:** Replace `alert()` calls with accessible, auto-dismissing in-app toast banners (using `role="alert"`) across applications.
+
 ## 2024-09-26 - Accessible Clipboard Copy Feedback
 **Learning:** Copying large blocks of text (like generated descriptions) without immediate visual feedback leaves users unsure if the action succeeded. Screen reader users also need to know what the button does.
 **Action:** Implement a copy button with an `aria-label`, an icon that temporarily changes to a checkmark on success, and use standard clipboard APIs.
@@ -15,3 +17,7 @@
 ## 2024-09-26 - Accessible Clickable Cards with Secondary Actions
 **Learning:** Implementing "clickable cards" (where a whole card is a button but also contains secondary buttons like delete) using nested interactive elements or `onClick` on a container `div` is a severe accessibility anti-pattern. Screen readers struggle with nested interactive elements, and valid HTML does not allow buttons inside buttons.
 **Action:** Use a non-interactive `relative` container `div`. Place the primary action as an `absolute inset-0` `<button>`. Use `pointer-events-none` on textual content to prevent it from blocking clicks, and set secondary interactive elements (like a delete button) to `relative z-10` so they float above the main card action.
+
+## 2024-10-24 - Dialog Accessibility and Focus Management
+**Learning:** When dialogs open, not managing focus can cause screen readers to read the background content or miss the dialog's purpose entirely. Providing `aria-describedby` helps assistive technologies explain the dialog, and focusing a "safe" action by default (like Cancel) prevents accidental destructive actions while orienting the user. For form modals triggered by an error (e.g. missing API key), focusing the empty, required field rather than the first field is highly helpful.
+**Action:** Use `aria-describedby` in dialogs to point to their descriptive text. Add `autoFocus` to the non-destructive action in confirmation dialogs. For configuration modals triggered dynamically, use `autoFocus` conditionally to direct the user exactly to the field that requires attention.
