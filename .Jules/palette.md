@@ -19,3 +19,7 @@
 ## 2024-10-13 - Accessible Destructive Modal Dialogs
 **Learning:** Destructive modals (like delete confirmations) present two major accessibility risks: accidental activation of the destructive action upon opening the modal, and lack of context for screen reader users on what is being deleted.
 **Action:** Always use `autoFocus` on the safe/cancel action to prevent accidental destructive clicks. Use `aria-describedby` on the dialog container to link it to the description text, ensuring screen reader users get full context without having to navigate to the text manually.
+
+## 2026-10-14 - Disabling Buttons for Unmet Prerequisites
+**Learning:** Misleading affordances on primary action buttons (like glowing effects when the action isn't actually possible) frustrate users and create confusion about system state.
+**Action:** Ensure primary buttons reflect their true state visually and functionally. When prerequisites (like linking an account) are unmet, disable the button and provide a helpful tooltip explaining why.
