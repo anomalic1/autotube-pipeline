@@ -19,3 +19,6 @@
 ## 2024-10-13 - Accessible Destructive Modal Dialogs
 **Learning:** Destructive modals (like delete confirmations) present two major accessibility risks: accidental activation of the destructive action upon opening the modal, and lack of context for screen reader users on what is being deleted.
 **Action:** Always use `autoFocus` on the safe/cancel action to prevent accidental destructive clicks. Use `aria-describedby` on the dialog container to link it to the description text, ensuring screen reader users get full context without having to navigate to the text manually.
+## 2024-10-15 - Interactive Radio Buttons Context
+**Learning:** When building custom UI toggles that act as radio button alternatives, visual styling isn't enough. Screen readers need explicit relationship context to understand that these options are mutually exclusive.
+**Action:** Always wrap custom radio button groups in a `role="radiogroup"` with an `aria-labelledby` referencing the group's label. Assign `role="radio"` and `aria-checked` to the individual buttons.
