@@ -14,6 +14,7 @@ export interface Session {
 export default function Dashboard() {
   const [appState, setAppState] = useState<ProcessState>('idle');
   const [selectedTitle, setSelectedTitle] = useState<number>(0);
+  const [visibility, setVisibility] = useState<'private' | 'schedule'>('private');
   
   const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
 
@@ -404,13 +405,23 @@ export default function Dashboard() {
                   <div className="space-y-6 mb-8">
                     {/* Visibility Setting */}
                     <div className="space-y-3">
-                      <label className="text-sm font-medium text-zinc-400">Visibility</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
+                      <label id="visibility-label" className="text-sm font-medium text-zinc-400">Visibility</label>
+                      <div role="radiogroup" aria-labelledby="visibility-label" className="grid grid-cols-2 gap-3">
+                        <button
+                          role="radio"
+                          aria-checked={visibility === 'private'}
+                          onClick={() => setVisibility('private')}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none ${visibility === 'private' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-300' : 'border-zinc-800 hover:bg-zinc-800/50 text-zinc-400'}`}
+                        >
                           <Lock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Private</span>
                         </button>
-                        <button className="flex flex-col items-center justify-center p-3 rounded-xl border border-zinc-800 hover:bg-zinc-800/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">
+                        <button
+                          role="radio"
+                          aria-checked={visibility === 'schedule'}
+                          onClick={() => setVisibility('schedule')}
+                          className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none ${visibility === 'schedule' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-300' : 'border-zinc-800 hover:bg-zinc-800/50 text-zinc-400'}`}
+                        >
                           <Clock className="w-5 h-5 mb-1" />
                           <span className="text-xs">Schedule</span>
                         </button>
