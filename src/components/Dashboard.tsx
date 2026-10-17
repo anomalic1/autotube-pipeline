@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [visibility, setVisibility] = useState<'private' | 'schedule'>('private');
   
   const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
+  const [isLinked, _setIsLinked] = useState<boolean>(false);
 
   const [errorToast, setErrorToast] = useState<string | null>(null);
   const errorTimeout = useRef<number | null>(null);
@@ -438,17 +439,23 @@ export default function Dashboard() {
                         <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Metadata</span>
                         <span className="text-xs">Ready</span>
                       </div>
-                      <div className="flex items-center justify-between text-zinc-500">
-                        <span className="flex items-center gap-2"><Lock className="w-4 h-4" /> Auth Status</span>
-                        <span className="text-xs">Not Linked</span>
+                      <div className={`flex items-center justify-between ${isLinked ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                        <span className="flex items-center gap-2">
+                          {isLinked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />} Auth Status
+                        </span>
+                        <span className="text-xs">{isLinked ? 'Linked' : 'Not Linked'}</span>
                       </div>
                     </div>
                   </div>
 
-                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-                    <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
-                      <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                  <button
+                    disabled={!isLinked}
+                    title={!isLinked ? "Please link your YouTube account first" : undefined}
+                    className={`w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl transition-opacity ${!isLinked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <div className={`absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur transition duration-200 ${!isLinked ? 'opacity-30' : 'opacity-60 group-hover:opacity-100'}`}></div>
+                    <div className={`relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 transition-colors ${!isLinked ? '' : 'hover:bg-zinc-800'}`}>
+                      <MonitorPlay className={`w-5 h-5 text-red-500 transition-transform ${!isLinked ? '' : 'group-hover:scale-110'}`} />
                       <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
                     </div>
                   </button>
