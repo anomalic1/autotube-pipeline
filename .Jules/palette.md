@@ -23,3 +23,7 @@
 ## 2024-10-16 - Accessible Custom Radio Toggles
 **Learning:** Building custom UI toggle buttons (acting as radio alternatives) using basic `<button>` tags without correct semantics fails to communicate their relationship and state to assistive technologies. Users with screen readers won't know they are choosing one option from a mutually exclusive set.
 **Action:** When building radio-like custom UI toggles, always group the buttons inside a container with `role="radiogroup"` (and an accessible name via `aria-labelledby` or `aria-label`). On the buttons themselves, assign `role="radio"` and dynamically manage the `aria-checked` boolean attribute based on the active selection state.
+
+## 2024-10-17 - Accessible Disabled States in Mockups
+**Learning:** Hardcoding static attributes like `disabled` on interactive elements when building UI mockups or incomplete features often masks underlying dynamic styles (like hover gradients or animations). If developers later simply remove the `disabled` attribute, these styles can be lost or broken, leading to visual regressions.
+**Action:** When simulating a disabled state for an incomplete feature (like an unlinked account), always introduce a mock state variable (e.g., `const [isLinked] = useState(false);`) and use conditional rendering to preserve the component's intended dynamic behavior for when it is active. This approach clearly demonstrates the required logic and prevents regressions.
