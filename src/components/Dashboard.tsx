@@ -252,12 +252,12 @@ export default function Dashboard() {
             </div>
 
             {/* Session History */}
-            {sessions.length > 0 && (
-              <div className="w-full max-w-3xl">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <History className="w-5 h-5 text-indigo-400" />
-                  Recent Sessions
-                </h3>
+            <div className="w-full max-w-3xl">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <History className="w-5 h-5 text-indigo-400" />
+                Recent Sessions
+              </h3>
+              {sessions.length > 0 ? (
                 <div className="grid gap-3">
                   {sessions.map((session) => (
                     <div 
@@ -284,8 +284,16 @@ export default function Dashboard() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="flex flex-col items-center justify-center p-8 rounded-xl bg-zinc-900/50 border border-zinc-800 text-center">
+                  <div className="w-12 h-12 rounded-full bg-zinc-800/50 flex items-center justify-center mb-3">
+                    <History className="w-6 h-6 text-zinc-500" />
+                  </div>
+                  <h4 className="text-zinc-200 font-medium mb-1">No recent sessions</h4>
+                  <p className="text-sm text-zinc-500">Upload a video to start generating content and see your history here.</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
