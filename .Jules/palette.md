@@ -26,3 +26,6 @@
 ## 2024-10-18 - Empty States
 **Learning:** The session history list disappeared completely when empty, which can be jarring. Empty states with helpful icons and text improve the onboarding flow.
 **Action:** Add empty state containers in similar list/history components in the future to encourage user action.
+## 2024-10-19 - Accessible Mockup States without Hardcoding
+**Learning:** Hardcoding static HTML attributes (like `disabled`) on UI mockups to demonstrate a state can obscure the intended dynamic styling and functionality, causing regressions later. It also provides zero context to screen reader users or sighted users on *why* the button is disabled.
+**Action:** When creating disabled states for UI mockups, use a mock state variable (e.g., `const isLinked = false;`). Apply `aria-disabled`, a descriptive `title` (tooltip), and use conditional CSS to visually disable the element and its hover effects while preserving the intended production-ready logic.
