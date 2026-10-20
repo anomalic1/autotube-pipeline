@@ -44,6 +44,9 @@ export default function Dashboard() {
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeout = useRef<number | null>(null);
 
+  // Mock state for YouTube Auth
+  const isLinked = false;
+
   const handleCopyDescription = () => {
     if (!generatedDescription) return;
     navigator.clipboard.writeText(generatedDescription);
@@ -446,17 +449,29 @@ export default function Dashboard() {
                         <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Metadata</span>
                         <span className="text-xs">Ready</span>
                       </div>
-                      <div className="flex items-center justify-between text-zinc-500">
-                        <span className="flex items-center gap-2"><Lock className="w-4 h-4" /> Auth Status</span>
-                        <span className="text-xs">Not Linked</span>
+                      <div className={`flex items-center justify-between ${isLinked ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                        <span className="flex items-center gap-2">
+                          {isLinked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />} Auth Status
+                        </span>
+                        <span className="text-xs">{isLinked ? 'Linked' : 'Not Linked'}</span>
                       </div>
                     </div>
                   </div>
 
-                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
-                    <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
-                      <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                  <button
+                    aria-disabled={!isLinked}
+                    title={!isLinked ? "Please link your YouTube account first" : ""}
+                    onClick={(e) => {
+                      if (!isLinked) {
+                        e.preventDefault();
+                        showError("Please link your YouTube account first");
+                      }
+                    }}
+                    className={`w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl transition-opacity ${!isLinked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    <div className={`absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 transition duration-200 ${!isLinked ? '' : 'group-hover:opacity-100'}`}></div>
+                    <div className={`relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 transition-colors ${!isLinked ? '' : 'hover:bg-zinc-800'}`}>
+                      <MonitorPlay className={`w-5 h-5 text-red-500 transition-transform ${!isLinked ? '' : 'group-hover:scale-110'}`} />
                       <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
                     </div>
                   </button>
