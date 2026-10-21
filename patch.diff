@@ -1,0 +1,42 @@
+--- src/components/Dashboard.tsx
++++ src/components/Dashboard.tsx
+@@ -28,6 +28,8 @@
+   const [apiKey, setApiKey] = useState(() => sessionStorage.getItem('apiKey') || '');
+   const [apiModel, setApiModel] = useState(() => sessionStorage.getItem('apiModel') || 'gpt-3.5-turbo');
+
++  const isLinked = false;
++
+   // Sessions state
+   const [sessions, setSessions] = useState<Session[]>(() => {
+     const saved = localStorage.getItem('autotube_sessions');
+@@ -341,17 +343,26 @@
+                         <span className="text-xs">Ready</span>
+                       </div>
+                       <div className="flex items-center justify-between text-zinc-500">
+-                        <span className="flex items-center gap-2"><Lock className="w-4 h-4" /> Auth Status</span>
+-                        <span className="text-xs">Not Linked</span>
++                        <span className={`flex items-center gap-2 ${isLinked ? 'text-emerald-400' : 'text-zinc-500'}`}>
++                          {isLinked ? <CheckCircle2 className="w-4 h-4" /> : <Lock className="w-4 h-4" />} Auth Status
++                        </span>
++                        <span className={`text-xs ${isLinked ? 'text-emerald-400' : 'text-zinc-500'}`}>{isLinked ? 'Linked' : 'Not Linked'}</span>
+                       </div>
+                     </div>
+                   </div>
+
+-                  <button className="w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl">
+-                    <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
++                  <button
++                    className={`w-full relative group focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none rounded-xl ${!isLinked ? 'opacity-50 cursor-not-allowed' : ''}`}
++                    aria-disabled={!isLinked}
++                    title={!isLinked ? "Connect your YouTube account to publish" : "Push to YouTube"}
++                    onClick={(e) => {
++                      if (!isLinked) e.preventDefault();
++                    }}
++                  >
++                    <div className={`absolute -inset-1 bg-gradient-to-r from-red-500 to-indigo-600 rounded-xl blur transition duration-200 ${!isLinked ? 'opacity-30' : 'opacity-60 group-hover:opacity-100'}`}></div>
+                     <div className="relative w-full bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-zinc-800 transition-colors">
+-                      <MonitorPlay className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
++                      <MonitorPlay className={`w-5 h-5 text-red-500 transition-transform ${!isLinked ? '' : 'group-hover:scale-110'}`} />
+                       <span className="font-semibold tracking-wide text-zinc-100">Push to YouTube</span>
+                     </div>
+                   </button>
