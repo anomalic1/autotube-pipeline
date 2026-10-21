@@ -26,3 +26,7 @@
 ## 2024-10-18 - Empty States
 **Learning:** The session history list disappeared completely when empty, which can be jarring. Empty states with helpful icons and text improve the onboarding flow.
 **Action:** Add empty state containers in similar list/history components in the future to encourage user action.
+
+## 2024-10-21 - Accessible Disabled States without CSS Regression
+**Learning:** Hardcoding standard `disabled` attributes on custom "mockup" UI buttons or components that depend on hover/focus states can cause regressions because browsers handle disabled element states differently, frequently removing hover animations and standard pseudo-class behavior.
+**Action:** When building custom styled buttons or complex interactive components, avoid simply using `disabled=true` if it breaks the intended design or animations. Instead, use a mock state (e.g., `const isLinked = false`), apply conditional CSS classes (like `opacity-50 cursor-not-allowed`), set `aria-disabled={true}` to provide semantic context for assistive tech, use an explanatory `title` tooltip, and intercept clicks (`e.preventDefault()`). This maintains full control over styling while preserving accessibility.
