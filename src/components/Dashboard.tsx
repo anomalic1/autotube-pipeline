@@ -276,8 +276,8 @@ export default function Dashboard() {
                         <span className="text-xs text-zinc-500">{session.date}</span>
                       </div>
                       <button 
-                        aria-label="Delete Session"
-                        title="Delete Session"
+                        aria-label={`Delete session for ${session.videoName}`}
+                        title={`Delete session for ${session.videoName}`}
                         onClick={(e) => confirmDeleteSession(e, session.id)}
                         className="relative z-10 p-2 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-400/10 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400 outline-none transition-all"
                       >
@@ -301,7 +301,11 @@ export default function Dashboard() {
 
         {/* State 2: AI Processing */}
         {appState === 'processing' && (
-          <div className="animate-in fade-in duration-500 flex flex-col items-center justify-center py-32 space-y-8">
+          <div
+            className="animate-in fade-in duration-500 flex flex-col items-center justify-center py-32 space-y-8"
+            role="status"
+            aria-live="polite"
+          >
             <div className="relative">
               <div className="absolute inset-0 bg-indigo-500 blur-[32px] opacity-20 animate-pulse"></div>
               <Loader2 className="w-16 h-16 text-indigo-400 animate-spin relative z-10" />
@@ -378,8 +382,8 @@ export default function Dashboard() {
                       </span>
                       <button
                         onClick={handleCopyDescription}
-                        aria-label="Copy description"
-                        title="Copy description"
+                        aria-label={isCopied ? "Copied to clipboard" : "Copy description"}
+                        title={isCopied ? "Copied!" : "Copy description"}
                         className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
