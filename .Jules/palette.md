@@ -33,3 +33,6 @@
 ## 2026-10-22 - Dynamic ARIA Feedback and Contextual Labels
 **Learning:** Screen reader users require specific context for repetitive UI elements like list item delete buttons. Providing dynamic feedback through updating `aria-label` and using `aria-live` regions significantly improves accessibility for interactive states like copying and loading.
 **Action:** Always include item-specific context in `aria-label` for lists. Use `aria-live="polite"` with `role="status"` on loading containers and update ARIA attributes dynamically for interactive feedback buttons.
+## 2024-05-24 - Modal & Dynamic Status Buttons
+**Learning:** Found that secondary modals like Settings were missing focus indicators on action buttons and autoFocus on safe actions (like Cancel), and dynamic toggle buttons (like Copy) were missing role='status' for screen readers.
+**Action:** When implementing or fixing modals, always ensure an `aria-describedby` exists, a safe action has `autoFocus`, and all action buttons include `focus-visible:ring-2` for keyboard users. For dynamic state buttons, always include `role='status'` and `aria-live='polite'` so screen readers announce state changes (like 'Copied to clipboard').

@@ -382,6 +382,7 @@ export default function Dashboard() {
                       </span>
                       <button
                         onClick={handleCopyDescription}
+                        aria-live="polite"
                         aria-label={isCopied ? "Copied to clipboard" : "Copy description"}
                         title={isCopied ? "Copied!" : "Copy description"}
                         className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
@@ -522,8 +523,9 @@ export default function Dashboard() {
         {/* Settings Modal */}
         {showSettings && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowSettings(false)}>
-            <div role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div role="dialog" aria-modal="true" aria-labelledby="settings-dialog-title" aria-describedby="settings-dialog-desc" className="bg-zinc-900 border border-zinc-800 p-8 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
               <h2 id="settings-dialog-title" className="text-xl font-bold mb-4">API Settings</h2>
+              <p id="settings-dialog-desc" className="sr-only">Configure your API URL, API Key, and Model settings.</p>
               <form onSubmit={saveSettings} className="space-y-4">
                 <div>
                   <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">API URL</label>
@@ -559,8 +561,8 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors">Save</button>
+                  <button type="button" autoFocus onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">Save</button>
                 </div>
               </form>
             </div>
