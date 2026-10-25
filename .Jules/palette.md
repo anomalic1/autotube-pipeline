@@ -33,3 +33,7 @@
 ## 2026-10-22 - Dynamic ARIA Feedback and Contextual Labels
 **Learning:** Screen reader users require specific context for repetitive UI elements like list item delete buttons. Providing dynamic feedback through updating `aria-label` and using `aria-live` regions significantly improves accessibility for interactive states like copying and loading.
 **Action:** Always include item-specific context in `aria-label` for lists. Use `aria-live="polite"` with `role="status"` on loading containers and update ARIA attributes dynamically for interactive feedback buttons.
+
+## 2026-10-25 - Sensitive Input Visibility Toggle
+**Learning:** Users often struggle with typos when entering complex, sensitive strings like API keys into standard password fields. The inability to verify their input leads to frustration and unnecessary debugging.
+**Action:** For inputs requiring long, sensitive strings (like API keys), provide a toggle button to temporarily switch the input type from `password` to `text`. Ensure this button has a dynamic `aria-label` for screen readers.
