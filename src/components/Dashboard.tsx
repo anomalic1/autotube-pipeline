@@ -383,6 +383,7 @@ export default function Dashboard() {
                       </span>
                       <button
                         onClick={handleCopyDescription}
+                        aria-live="polite"
                         aria-label={isCopied ? "Copied to clipboard" : "Copy description"}
                         title={isCopied ? "Copied!" : "Copy description"}
                         className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"

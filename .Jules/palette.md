@@ -37,3 +37,7 @@
 ## 2026-10-25 - Sensitive Input Visibility Toggle
 **Learning:** Users often struggle with typos when entering complex, sensitive strings like API keys into standard password fields. The inability to verify their input leads to frustration and unnecessary debugging.
 **Action:** For inputs requiring long, sensitive strings (like API keys), provide a toggle button to temporarily switch the input type from `password` to `text`. Ensure this button has a dynamic `aria-label` for screen readers.
+
+## 2024-10-26 - Accessible Screen Reader Live Regions for Copy Buttons
+**Learning:** Copying text to the clipboard changes the visual state of a button (e.g. icon changes to a checkmark), but screen reader users are left unaware if the action succeeded unless the change is announced.
+**Action:** Always add `aria-live="polite"` to copy buttons or similar interactive elements where the state/icon changes dynamically, ensuring assistive technologies announce the updated state (e.g. via dynamic `aria-label`).
