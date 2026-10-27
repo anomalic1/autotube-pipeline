@@ -529,6 +529,7 @@ export default function Dashboard() {
                 <div>
                   <label htmlFor="apiUrl" className="block text-sm text-zinc-400 mb-1">API URL</label>
                   <input 
+                    autoFocus
                     id="apiUrl"
                     type="url" 
                     value={apiUrl}
@@ -538,7 +539,9 @@ export default function Dashboard() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="apiKey" className="block text-sm text-zinc-400 mb-1">API Key</label>
+                  <label htmlFor="apiKey" className="block text-sm text-zinc-400 mb-1">
+                    API Key <span className="text-red-500">*</span>
+                  </label>
                   <div className="relative">
                     <input
                       id="apiKey"
@@ -547,11 +550,13 @@ export default function Dashboard() {
                       onChange={(e) => setApiKey(e.target.value)}
                       className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2 pr-10 focus:ring-2 focus:ring-indigo-500 outline-none"
                       placeholder="sk-..."
+                      required
                     />
                     <button
                       type="button"
                       onClick={() => setShowApiKey(!showApiKey)}
                       aria-label={showApiKey ? "Hide API Key" : "Show API Key"}
+                      title={showApiKey ? "Hide API Key" : "Show API Key"}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                     >
                       {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -570,8 +575,8 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
-                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors">Cancel</button>
-                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors">Save</button>
+                  <button type="button" onClick={() => setShowSettings(false)} className="px-4 py-2 rounded-lg text-zinc-400 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">Cancel</button>
+                  <button type="submit" className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none">Save</button>
                 </div>
               </form>
             </div>

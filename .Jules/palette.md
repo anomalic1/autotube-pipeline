@@ -37,3 +37,7 @@
 ## 2026-10-25 - Sensitive Input Visibility Toggle
 **Learning:** Users often struggle with typos when entering complex, sensitive strings like API keys into standard password fields. The inability to verify their input leads to frustration and unnecessary debugging.
 **Action:** For inputs requiring long, sensitive strings (like API keys), provide a toggle button to temporarily switch the input type from `password` to `text`. Ensure this button has a dynamic `aria-label` for screen readers.
+
+## 2026-10-27 - Accessible Modal Focus Management
+**Learning:** Modal dialogs can be frustrating for keyboard users if focus isn't immediately managed upon opening, and if standard action buttons lack clear visual focus indicators.
+**Action:** Always ensure the primary input element in a modal has `autoFocus` so keyboard users are placed directly into the form context. Furthermore, explicitly add visible focus classes (like `focus-visible:ring`) to all modal action buttons to ensure tab navigation is trackable.
