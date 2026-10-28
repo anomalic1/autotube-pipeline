@@ -41,3 +41,7 @@
 ## 2026-10-27 - Accessible Modal Focus Management
 **Learning:** Modal dialogs can be frustrating for keyboard users if focus isn't immediately managed upon opening, and if standard action buttons lack clear visual focus indicators.
 **Action:** Always ensure the primary input element in a modal has `autoFocus` so keyboard users are placed directly into the form context. Furthermore, explicitly add visible focus classes (like `focus-visible:ring`) to all modal action buttons to ensure tab navigation is trackable.
+
+## 2024-11-28 - Contextual Limits in Generated Titles
+**Learning:** AI-generated YouTube titles that exceed recommended display limits (usually around 60 characters) can be truncated on various devices, reducing their effectiveness and click-through rate. Users lack context on whether a generated title is within safe limits when selecting one from a list.
+**Action:** Provide inline character counts and visual warnings (like turning text orange/red) when generated text like titles exceeds the platform's safe display limits, helping users make informed selections before publishing.

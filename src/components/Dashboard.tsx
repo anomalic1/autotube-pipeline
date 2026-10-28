@@ -357,11 +357,17 @@ export default function Dashboard() {
                           onChange={() => setSelectedTitle(idx)}
                         />
                         <span className="flex flex-1">
-                          <span className="flex flex-col">
+                          <span className="flex flex-col w-full pr-4">
                             <span className="block text-sm font-medium text-zinc-200">{title}</span>
+                            <span
+                              className={`text-xs mt-1 ${title.length > 60 ? 'text-orange-400' : 'text-zinc-500'}`}
+                              aria-live="polite"
+                            >
+                              {title.length} / 60 {title.length > 60 && '(truncation risk)'}
+                            </span>
                           </span>
                         </span>
-                        <CheckCircle2 className={`w-5 h-5 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
+                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
                       </label>
                     ))}
                   </div>
