@@ -44,8 +44,25 @@ export default function Dashboard() {
   const [generatedDescription, setGeneratedDescription] = useState('');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
 
+  const [isTitleCopied, setIsTitleCopied] = useState(false);
+  const titleCopyTimeout = useRef<number | null>(null);
+
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeout = useRef<number | null>(null);
+
+  const handleCopyTitle = () => {
+    if (!generatedTitles[selectedTitle]) return;
+    navigator.clipboard.writeText(generatedTitles[selectedTitle]);
+    setIsTitleCopied(true);
+
+    if (titleCopyTimeout.current) {
+      clearTimeout(titleCopyTimeout.current);
+    }
+
+    titleCopyTimeout.current = window.setTimeout(() => {
+      setIsTitleCopied(false);
+    }, 2000);
+  };
 
   const handleCopyDescription = () => {
     if (!generatedDescription) return;
@@ -342,10 +359,20 @@ export default function Dashboard() {
                 
                 {/* Title Selection */}
                 <div className="bg-zinc-900/50 backdrop-blur-md border border-zinc-800/80 rounded-2xl p-6">
-                  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-indigo-400" />
-                    Select a High-Converting Title
-                  </h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-indigo-400" />
+                      Select a High-Converting Title
+                    </h2>
+                    <button
+                      onClick={handleCopyTitle}
+                      aria-label={isTitleCopied ? "Title copied to clipboard" : "Copy selected title"}
+                      title={isTitleCopied ? "Copied!" : "Copy selected title"}
+                      className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
+                    >
+                      {isTitleCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
                   <div className="space-y-3">
                     {generatedTitles.map((title, idx) => (
                       <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
