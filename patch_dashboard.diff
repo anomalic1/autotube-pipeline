@@ -1,0 +1,117 @@
+<<<<<<< SEARCH
+  const [isCopied, setIsCopied] = useState(false);
+  const copyTimeout = useRef<number | null>(null);
+
+  const handleCopyDescription = () => {
+    if (!generatedDescription) return;
+    navigator.clipboard.writeText(generatedDescription);
+    setIsCopied(true);
+
+    if (copyTimeout.current) {
+      clearTimeout(copyTimeout.current);
+    }
+
+    copyTimeout.current = window.setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+=======
+  const [isCopied, setIsCopied] = useState(false);
+  const copyTimeout = useRef<number | null>(null);
+
+  const [copiedTitleIndex, setCopiedTitleIndex] = useState<number | null>(null);
+  const titleCopyTimeout = useRef<number | null>(null);
+
+  const handleCopyDescription = () => {
+    if (!generatedDescription) return;
+    navigator.clipboard.writeText(generatedDescription);
+    setIsCopied(true);
+
+    if (copyTimeout.current) {
+      clearTimeout(copyTimeout.current);
+    }
+
+    copyTimeout.current = window.setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
+
+  const handleCopyTitle = (e: React.MouseEvent, title: string, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(title);
+    setCopiedTitleIndex(index);
+    if (titleCopyTimeout.current) {
+      clearTimeout(titleCopyTimeout.current);
+    }
+    titleCopyTimeout.current = window.setTimeout(() => {
+      setCopiedTitleIndex(null);
+    }, 2000);
+  };
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+                  <div className="space-y-3">
+                    {generatedTitles.map((title, idx) => (
+                      <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
+                        <input
+                          type="radio"
+                          name="title"
+                          className="sr-only"
+                          checked={selectedTitle === idx}
+                          onChange={() => setSelectedTitle(idx)}
+                        />
+                        <span className="flex flex-1">
+                          <span className="flex flex-col w-full pr-4">
+                            <span className="block text-sm font-medium text-zinc-200">{title}</span>
+                            <span
+                              className={`text-xs mt-1 ${title.length > 60 ? 'text-orange-400' : 'text-zinc-500'}`}
+                              aria-live="polite"
+                            >
+                              {title.length} / 60 {title.length > 60 && '(truncation risk)'}
+                            </span>
+                          </span>
+                        </span>
+                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
+                      </label>
+                    ))}
+                  </div>
+=======
+                  <div className="space-y-3">
+                    {generatedTitles.map((title, idx) => (
+                      <div key={idx} className={`relative flex rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
+                        <input
+                          type="radio"
+                          id={`title-${idx}`}
+                          name="title"
+                          className="sr-only"
+                          checked={selectedTitle === idx}
+                          onChange={() => setSelectedTitle(idx)}
+                        />
+                        <label htmlFor={`title-${idx}`} className="absolute inset-0 cursor-pointer rounded-xl" aria-label={`Select title: ${title}`}></label>
+                        <span className="flex flex-1 pointer-events-none">
+                          <span className="flex flex-col w-full pr-4">
+                            <span className="block text-sm font-medium text-zinc-200">{title}</span>
+                            <span
+                              className={`text-xs mt-1 ${title.length > 60 ? 'text-orange-400' : 'text-zinc-500'}`}
+                              aria-live="polite"
+                            >
+                              {title.length} / 60 {title.length > 60 && '(truncation risk)'}
+                            </span>
+                          </span>
+                        </span>
+
+                        <div className="flex flex-col items-center gap-2 z-10 relative">
+                          <CheckCircle2 className={`w-5 h-5 flex-shrink-0 pointer-events-none ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
+                          <button
+                            onClick={(e) => handleCopyTitle(e, title, idx)}
+                            aria-label={copiedTitleIndex === idx ? "Copied" : "Copy title"}
+                            title="Copy title"
+                            className="p-1 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
+                          >
+                            {copiedTitleIndex === idx ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+>>>>>>> REPLACE
