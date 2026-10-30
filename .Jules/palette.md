@@ -45,3 +45,6 @@
 ## 2024-11-28 - Contextual Limits in Generated Titles
 **Learning:** AI-generated YouTube titles that exceed recommended display limits (usually around 60 characters) can be truncated on various devices, reducing their effectiveness and click-through rate. Users lack context on whether a generated title is within safe limits when selecting one from a list.
 **Action:** Provide inline character counts and visual warnings (like turning text orange/red) when generated text like titles exceeds the platform's safe display limits, helping users make informed selections before publishing.
+## 2023-11-14 - Accessible Clickable Cards with Secondary Actions
+**Learning:** When text inside an interactive clickable card needs to be copyable, users struggle with selection. Attempting to copy text usually clicks the card, leading to frustration. However, nesting a `<button>` inside a `<label>` is invalid HTML and fails accessibility.
+**Action:** Use a `<div>` as the card wrapper. Place the primary interactive element (e.g. `<label>` or `<button>`) as `absolute inset-0`. Set `pointer-events-none` on textual content to let clicks pass through to the primary element. Place secondary actions (like a explicit Copy button) as `relative z-10` with `e.stopPropagation()` to prevent nested interactions while ensuring full accessibility.
