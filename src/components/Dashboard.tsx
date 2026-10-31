@@ -47,6 +47,22 @@ export default function Dashboard() {
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeout = useRef<number | null>(null);
 
+  const [copiedTitleIndex, setCopiedTitleIndex] = useState<number | null>(null);
+  const titleCopyTimeout = useRef<number | null>(null);
+
+  const handleCopyTitle = (e: React.MouseEvent, title: string, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(title);
+    setCopiedTitleIndex(index);
+    if (titleCopyTimeout.current) {
+      clearTimeout(titleCopyTimeout.current);
+    }
+    titleCopyTimeout.current = window.setTimeout(() => {
+      setCopiedTitleIndex(null);
+    }, 2000);
+  };
+
   const handleCopyDescription = () => {
     if (!generatedDescription) return;
     navigator.clipboard.writeText(generatedDescription);
@@ -346,17 +362,17 @@ export default function Dashboard() {
                     <Sparkles className="w-5 h-5 text-indigo-400" />
                     Select a High-Converting Title
                   </h2>
-                  <div className="space-y-3">
+                  <div className="space-y-3" role="radiogroup" aria-label="Select a High-Converting Title">
                     {generatedTitles.map((title, idx) => (
-                      <label key={idx} className={`relative flex cursor-pointer rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
-                        <input 
-                          type="radio" 
-                          name="title" 
-                          className="sr-only" 
-                          checked={selectedTitle === idx} 
-                          onChange={() => setSelectedTitle(idx)}
+                      <div key={idx} className={`relative flex items-center rounded-xl border p-4 transition-all hover:bg-zinc-800/50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-indigo-500 ${selectedTitle === idx ? 'border-indigo-500 bg-indigo-500/10 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-zinc-800'}`}>
+                        <button
+                          role="radio"
+                          aria-checked={selectedTitle === idx}
+                          onClick={() => setSelectedTitle(idx)}
+                          className="absolute inset-0 w-full h-full rounded-xl outline-none"
+                          aria-label={`Select title: ${title}`}
                         />
-                        <span className="flex flex-1">
+                        <span className="flex flex-1 items-center justify-between pointer-events-none">
                           <span className="flex flex-col w-full pr-4">
                             <span className="block text-sm font-medium text-zinc-200">{title}</span>
                             <span
@@ -366,9 +382,18 @@ export default function Dashboard() {
                               {title.length} / 60 {title.length > 60 && '(truncation risk)'}
                             </span>
                           </span>
+                          <CheckCircle2 className={`w-5 h-5 flex-shrink-0 mr-4 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
                         </span>
-                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
-                      </label>
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyTitle(e, title, idx)}
+                          aria-label={copiedTitleIndex === idx ? "Copied to clipboard" : "Copy title"}
+                          title={copiedTitleIndex === idx ? "Copied!" : "Copy title"}
+                          className="relative z-10 p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none flex-shrink-0"
+                        >
+                          {copiedTitleIndex === idx ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </div>
