@@ -45,3 +45,7 @@
 ## 2024-11-28 - Contextual Limits in Generated Titles
 **Learning:** AI-generated YouTube titles that exceed recommended display limits (usually around 60 characters) can be truncated on various devices, reducing their effectiveness and click-through rate. Users lack context on whether a generated title is within safe limits when selecting one from a list.
 **Action:** Provide inline character counts and visual warnings (like turning text orange/red) when generated text like titles exceeds the platform's safe display limits, helping users make informed selections before publishing.
+
+## 2024-11-28 - Explicit Copy Buttons in Clickable Cards
+**Learning:** When text inside an interactive `<label>` (like a clickable card for a radio button) needs to be copied, relying on user text selection is a poor UX choice. It often unintentionally triggers the interactive element (e.g., selecting the radio button) and frustrates the user.
+**Action:** Provide an explicit, accessible 'Copy' button within the card for text that is commonly copied. Ensure it is placed as a separate interactive layer above the card's main interactive area (using `relative z-10` while the primary action is an absolute background layer).
