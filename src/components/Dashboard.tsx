@@ -45,7 +45,9 @@ export default function Dashboard() {
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
 
   const [isCopied, setIsCopied] = useState(false);
+  const [copiedTitleIdx, setCopiedTitleIdx] = useState<number | null>(null);
   const copyTimeout = useRef<number | null>(null);
+  const copyTitleTimeout = useRef<number | null>(null);
 
   const handleCopyDescription = () => {
     if (!generatedDescription) return;
@@ -58,6 +60,20 @@ export default function Dashboard() {
 
     copyTimeout.current = window.setTimeout(() => {
       setIsCopied(false);
+    }, 2000);
+  };
+
+  const handleCopyTitle = (e: React.MouseEvent, title: string, idx: number) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(title);
+    setCopiedTitleIdx(idx);
+
+    if (copyTitleTimeout.current) {
+      clearTimeout(copyTitleTimeout.current);
+    }
+
+    copyTitleTimeout.current = window.setTimeout(() => {
+      setCopiedTitleIdx(null);
     }, 2000);
   };
 
@@ -367,6 +383,15 @@ export default function Dashboard() {
                             </span>
                           </span>
                         </span>
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyTitle(e, title, idx)}
+                          aria-label={copiedTitleIdx === idx ? "Copied to clipboard" : "Copy title"}
+                          title={copiedTitleIdx === idx ? "Copied!" : "Copy title"}
+                          className="p-1.5 mr-3 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none z-10 relative"
+                        >
+                          {copiedTitleIdx === idx ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                        </button>
                         <CheckCircle2 className={`w-5 h-5 flex-shrink-0 ${selectedTitle === idx ? 'text-indigo-400' : 'text-zinc-700'}`} />
                       </label>
                     ))}
