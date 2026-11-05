@@ -42,6 +42,7 @@ export default function Dashboard() {
   // Generated Data
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
+  const [tags, setTags] = useState('AI, YouTube Automation, Cloudflare Pages, Vite, React');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
 
   const [isTitleCopied, setIsTitleCopied] = useState(false);
@@ -368,6 +369,7 @@ export default function Dashboard() {
                       onClick={handleCopyTitle}
                       aria-label={isTitleCopied ? "Title copied to clipboard" : "Copy selected title"}
                       title={isTitleCopied ? "Copied!" : "Copy selected title"}
+                      aria-live="polite"
                       className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                     >
                       {isTitleCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -418,6 +420,7 @@ export default function Dashboard() {
                         onClick={handleCopyDescription}
                         aria-label={isCopied ? "Copied to clipboard" : "Copy description"}
                         title={isCopied ? "Copied!" : "Copy description"}
+                        aria-live="polite"
                         className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -433,12 +436,22 @@ export default function Dashboard() {
                   />
                   <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
                      <div className="flex-1">
-                        <label htmlFor="tags" className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label htmlFor="tags" className="text-xs text-zinc-500 block">Tags (comma separated)</label>
+                          <span
+                            className={`text-xs ${tags.length > 500 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
+                            aria-live="polite"
+                          >
+                            {tags.length} / 500
+                          </span>
+                        </div>
                         <input 
                           id="tags"
                           type="text" 
-                          defaultValue="AI, YouTube Automation, Cloudflare Pages, Vite, React"
-                          className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                          value={tags}
+                          onChange={(e) => setTags(e.target.value)}
+                          aria-invalid={tags.length > 500}
+                          className={`w-full bg-zinc-950 border rounded-lg px-3 py-2 text-sm focus:ring-2 outline-none ${tags.length > 500 ? 'border-red-500/50 focus:ring-red-500 text-red-400' : 'border-zinc-800 focus:ring-indigo-500 text-zinc-300'}`}
                         />
                      </div>
                   </div>
