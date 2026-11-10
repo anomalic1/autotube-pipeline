@@ -42,6 +42,7 @@ export default function Dashboard() {
   // Generated Data
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [generatedDescription, setGeneratedDescription] = useState('');
+  const [tags, setTags] = useState('AI, YouTube Automation, Cloudflare Pages, Vite, React');
   const [currentVideoName, setCurrentVideoName] = useState<string>('Unknown.mp4');
 
   const [isTitleCopied, setIsTitleCopied] = useState(false);
@@ -433,12 +434,22 @@ export default function Dashboard() {
                   />
                   <div className="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-4">
                      <div className="flex-1">
-                        <label htmlFor="tags" className="text-xs text-zinc-500 mb-1 block">Tags (comma separated)</label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label htmlFor="tags" className="text-xs text-zinc-500 block">Tags (comma separated)</label>
+                          <span
+                            className={`text-xs ${tags.length > 500 ? 'text-red-500 font-medium' : 'text-zinc-500'}`}
+                            aria-live="polite"
+                          >
+                            {tags.length} / 500
+                          </span>
+                        </div>
                         <input 
                           id="tags"
                           type="text" 
-                          defaultValue="AI, YouTube Automation, Cloudflare Pages, Vite, React"
-                          className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                          value={tags}
+                          onChange={(e) => setTags(e.target.value)}
+                          aria-invalid={tags.length > 500}
+                          className={`w-full bg-zinc-950 border rounded-lg px-3 py-2 text-sm focus:ring-2 outline-none transition-shadow ${tags.length > 500 ? 'border-red-500/50 focus:ring-red-500' : 'border-zinc-800 focus:ring-indigo-500'}`}
                         />
                      </div>
                   </div>
