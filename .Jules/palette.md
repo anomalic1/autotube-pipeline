@@ -49,3 +49,6 @@
 ## 2024-12-05 - Avoid Text Selection in Interactive Labels
 **Learning:** When text inside an interactive `<label>` (like a clickable card for a radio button) needs to be copied by the user, relying on standard text selection is poor UX. Clicking to select text often triggers the input's toggle state unexpectedly, creating a frustrating experience.
 **Action:** For clickable cards or labels where content might need to be copied, provide a dedicated, accessible "Copy" button outside of the label interaction zone rather than expecting users to manually select text.
+## 2024-11-10 - Tag Input Validation Limit
+**Learning:** YouTube enforces a strict 500-character limit for tags. Missing this validation leads to silent submission failures when posting metadata.
+**Action:** Always include a character counter with visual validation (`aria-invalid`) capped at 500 characters for UI elements handling YouTube tag inputs.
