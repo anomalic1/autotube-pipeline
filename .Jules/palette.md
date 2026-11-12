@@ -49,3 +49,7 @@
 ## 2024-12-05 - Avoid Text Selection in Interactive Labels
 **Learning:** When text inside an interactive `<label>` (like a clickable card for a radio button) needs to be copied by the user, relying on standard text selection is poor UX. Clicking to select text often triggers the input's toggle state unexpectedly, creating a frustrating experience.
 **Action:** For clickable cards or labels where content might need to be copied, provide a dedicated, accessible "Copy" button outside of the label interaction zone rather than expecting users to manually select text.
+
+## 2024-12-06 - Visual Validation for Strict Platform Limits
+**Learning:** Platform fields with hard limits, such as YouTube's strict 500-character boundary for tags, can cause silent submission failures if users are unaware they have exceeded the limit, significantly affecting the UX.
+**Action:** Include character counters and dynamic visual validation (e.g. `aria-invalid` capped at 500 characters) for UI elements handling such inputs to prevent unexpected errors.
